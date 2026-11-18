@@ -1,0 +1,33 @@
+{
+  "name": "metaphor-local-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Loopback multi-protocol inference gateway for Metaphor account access with local tool execution",
+  "license": "Unlicense",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dariusnv/metaphor-local-gateway.git"
+  },
+  "main": "src/server.js",
+  "bin": {
+    "metaphor-local-gateway": "src/cli.js"
+  },
+  "files": [
+    "src/",
+    "docs/",
+    "README.md",
+    "HANDOFF.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    ".env.example"
+  ],
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "node --test test/gateway.test.js",
+    "test:live": "node --test test/live.test.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
