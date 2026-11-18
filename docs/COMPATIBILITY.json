@@ -1,0 +1,392 @@
+{
+  "status": "Verified live with authenticated direct inference on 2026-11-18",
+  "upstream": "https://llms.withmetaphor.com",
+  "observedUpstreamInfrastructure": "Vercel AI Gateway (Server: Vercel; stateless pass-through across /v1/models, /v1/chat/completions, /v1/responses, and /v1/messages)",
+  "requiredLocalRoutes": [
+    "GET /v1/models",
+    "POST /v1/chat/completions",
+    "POST /v1/responses",
+    "POST /v1/messages"
+  ],
+  "notes": [
+    "Only tested model/protocol combinations are marked 'verified'. Untested siblings in the same family remain 'untested' rather than assumed.",
+    "Observed upstream model strings (e.g. fireworks/deepseek-v4-1-flash, bedrock/qwen3-coder-next) reflect what llms.withmetaphor.com returned in response metadata at test time, not an independent proof of model weights.",
+    "Upstream enforces a Darwin concurrency limit returning HTTP 429 ('Too many concurrent Darwin requests.') with Retry-After (typically 2s, though server-side slot release after long requests can take ~3-6s)."
+  ],
+  "models": [
+    {
+      "id": "deepseek-v4-1-flash",
+      "name": "DeepSeek V4.1 Flash",
+      "owned_by": "deepseek",
+      "aliases": ["deepseek-v4.1-flash", "ds-v4-1-flash", "ds-v4.1-flash"],
+      "context_window": 1048576,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": "fireworks/deepseek-v4-1-flash",
+      "protocols": {
+        "chat_completions": "verified",
+        "responses": "verified",
+        "messages": "verified"
+      },
+      "sse_streaming": "verified (all 3 routes)",
+      "tools_round_trip": "verified (all 3 routes)",
+      "reasoning": "verified (delta.reasoning / output reasoning summary / thinking block)",
+      "images": "verified (8x8 PNG data URL color check -> 'Red')",
+      "cancellation": "verified (local abort terminates stream; subsequent request succeeds)"
+    },
+    {
+      "id": "deepseek-v4-pro",
+      "name": "DeepSeek V4 Pro",
+      "owned_by": "deepseek",
+      "aliases": ["deepseek-pro", "ds-v4-pro"],
+      "context_window": 1048576,
+      "supports_tool_calling": true,
+      "supports_vision": false,
+      "observed_upstream_model": "relace/deepseek-v4-pro",
+      "protocols": {
+        "chat_completions": "verified",
+        "responses": "untested (hit 429 concurrency cooldown during probe)",
+        "messages": "verified"
+      },
+      "sse_streaming": "untested",
+      "tools_round_trip": "untested",
+      "reasoning": "untested",
+      "images": "unsupported (catalog supports_vision=false)",
+      "cancellation": "untested"
+    },
+    {
+      "id": "glm-5.3",
+      "name": "GLM-5.3",
+      "owned_by": "zai",
+      "aliases": ["glm5.3", "glm-53", "zhipu-glm-5.3"],
+      "context_window": 1048576,
+      "supports_tool_calling": true,
+      "supports_vision": false,
+      "observed_upstream_model": "novita/glm-5.3",
+      "protocols": {
+        "chat_completions": "verified",
+        "responses": "verified",
+        "messages": "verified"
+      },
+      "sse_streaming": "untested",
+      "tools_round_trip": "untested",
+      "reasoning": "verified (emits reasoning/thinking tokens; shares max_tokens budget with visible output)",
+      "images": "unsupported (catalog supports_vision=false)",
+      "cancellation": "untested"
+    },
+    {
+      "id": "qwen3-coder-next",
+      "name": "Qwen3 Coder Next",
+      "owned_by": "alibaba",
+      "aliases": ["qwen3-coder-latest", "alibaba-qwen3-coder-next"],
+      "context_window": 256000,
+      "supports_tool_calling": true,
+      "supports_vision": false,
+      "observed_upstream_model": "bedrock/qwen3-coder-next",
+      "protocols": {
+        "chat_completions": "verified",
+        "responses": "verified",
+        "messages": "verified"
+      },
+      "sse_streaming": "verified (/v1/responses and Pi /v1/chat/completions)",
+      "tools_round_trip": "verified (/v1/responses function_call + Pi local read/edit round trip)",
+      "reasoning": "not emitted by default",
+      "images": "unsupported (catalog supports_vision=false)",
+      "cancellation": "untested"
+    },
+    {
+      "id": "kimi-k3-1-pro-highspeed",
+      "name": "Kimi K3.1 Pro Highspeed",
+      "owned_by": "moonshot",
+      "aliases": ["kimi-k3.1-pro-highspeed", "k3.1-pro-highspeed", "kimi-k31-pro-highspeed"],
+      "context_window": 1048576,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": "moonshot/kimi-k3-1-pro-highspeed",
+      "protocols": {
+        "chat_completions": "verified",
+        "responses": "verified (high latency observed: ~37s non-streaming)",
+        "messages": "untested (hit 429 concurrency cooldown after long /v1/responses turn)"
+      },
+      "sse_streaming": "untested",
+      "tools_round_trip": "untested",
+      "reasoning": "verified",
+      "images": "capability-advertised (untested)",
+      "cancellation": "untested"
+    },
+    {
+      "id": "kimi-k3-1-pro",
+      "name": "Kimi K3.1 Pro",
+      "owned_by": "moonshot",
+      "aliases": ["kimi-k3.1-pro", "k3.1-pro", "kimi-k31-pro"],
+      "context_window": 1048576,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": {
+        "chat_completions": "untested",
+        "responses": "untested",
+        "messages": "untested"
+      },
+      "sse_streaming": "untested",
+      "tools_round_trip": "untested",
+      "reasoning": "untested",
+      "images": "capability-advertised (untested)",
+      "cancellation": "untested"
+    },
+    {
+      "id": "kimi-k3",
+      "name": "Kimi K3",
+      "owned_by": "moonshot",
+      "aliases": ["k3", "kimi-k-3"],
+      "context_window": 1048576,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": {
+        "chat_completions": "untested",
+        "responses": "untested",
+        "messages": "untested"
+      },
+      "sse_streaming": "untested",
+      "tools_round_trip": "untested",
+      "reasoning": "untested",
+      "images": "capability-advertised (untested)",
+      "cancellation": "untested"
+    },
+    {
+      "id": "kimi-k2-5",
+      "name": "Kimi K2.5",
+      "owned_by": "moonshot",
+      "aliases": ["kimi-k2.5", "k2.5", "kimi-k25"],
+      "context_window": 262144,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": {
+        "chat_completions": "untested",
+        "responses": "untested",
+        "messages": "untested"
+      },
+      "sse_streaming": "untested",
+      "tools_round_trip": "untested",
+      "reasoning": "untested",
+      "images": "capability-advertised (untested)",
+      "cancellation": "untested"
+    },
+    {
+      "id": "minimax-m3",
+      "name": "MiniMax M3",
+      "owned_by": "minimax",
+      "aliases": ["minimax-m3.0"],
+      "context_window": 1048576,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": "minimax/minimax-m3",
+      "protocols": {
+        "chat_completions": "verified",
+        "responses": "verified",
+        "messages": "verified"
+      },
+      "sse_streaming": "verified (/v1/messages)",
+      "tools_round_trip": "verified (/v1/messages tool_use + tool_result)",
+      "reasoning": "untested",
+      "images": "capability-advertised (untested)",
+      "cancellation": "untested"
+    },
+    {
+      "id": "gpt-5.4-mini",
+      "name": "GPT 5.4 Mini",
+      "owned_by": "openai",
+      "aliases": ["gpt-5-4-mini", "chatgpt-5.4-mini", "gpt54-mini"],
+      "context_window": 400000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": "openai/gpt-5.4-mini",
+      "protocols": {
+        "chat_completions": "verified",
+        "responses": "verified",
+        "messages": "verified"
+      },
+      "sse_streaming": "untested",
+      "tools_round_trip": "untested",
+      "reasoning": "untested",
+      "images": "capability-advertised (untested)",
+      "cancellation": "untested"
+    },
+    {
+      "id": "gpt-6-astra",
+      "name": "GPT-6 Astra",
+      "owned_by": "openai",
+      "aliases": ["gpt-6", "gpt6-astra", "chatgpt-6-astra", "astra"],
+      "context_window": 1050000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "gpt-6.1-sol",
+      "name": "GPT-6.1 Sol",
+      "owned_by": "openai",
+      "aliases": ["chatgpt-6.1-sol", "gpt6.1-sol"],
+      "context_window": 1050000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "gpt-6.1-terra",
+      "name": "GPT-6.1 Terra",
+      "owned_by": "openai",
+      "aliases": ["chatgpt-6.1-terra", "gpt6.1-terra"],
+      "context_window": 1050000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "gpt-6-sol",
+      "name": "GPT-6 Sol",
+      "owned_by": "openai",
+      "aliases": ["chatgpt-6-sol", "gpt6-sol", "sol"],
+      "context_window": 1050000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "gpt-6-luna",
+      "name": "GPT-6 Luna",
+      "owned_by": "openai",
+      "aliases": ["chatgpt-6-luna", "gpt6-luna", "luna"],
+      "context_window": 1050000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "gpt-5.6-sol",
+      "name": "GPT 5.6 Sol",
+      "owned_by": "openai",
+      "aliases": ["gpt-5-6-sol", "chatgpt-5.6-sol", "gpt56-sol"],
+      "context_window": 1050000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "gpt-5.6-terra",
+      "name": "GPT 5.6 Terra",
+      "owned_by": "openai",
+      "aliases": ["gpt-5-6-terra", "chatgpt-5.6-terra", "gpt56-terra"],
+      "context_window": 1050000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "gpt-5.6-luna",
+      "name": "GPT 5.6 Luna",
+      "owned_by": "openai",
+      "aliases": ["gpt-5-6-luna", "chatgpt-5.6-luna", "gpt56-luna", "codex-auto-review"],
+      "context_window": 1050000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "gpt-5.5",
+      "name": "GPT 5.5",
+      "owned_by": "openai",
+      "aliases": ["gpt-5-5", "chatgpt-5.5", "gpt55"],
+      "context_window": 1050000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "gpt-5.2",
+      "name": "GPT 5.2",
+      "owned_by": "openai",
+      "aliases": ["gpt-5-2", "chatgpt-5.2", "gpt52"],
+      "context_window": 400000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "claude-haiku-4-5",
+      "name": "Claude Haiku 4.5",
+      "owned_by": "anthropic",
+      "aliases": ["claude-haiku-4.5", "haiku-4.5", "haiku-4-5", "claude-4.5-haiku", "claude-haiku-4-5-20251001"],
+      "context_window": 200000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": "azure/claude-haiku-4-5",
+      "protocols": {
+        "chat_completions": "untested (hit 429 concurrency cooldown during probe)",
+        "responses": "verified",
+        "messages": "verified"
+      },
+      "sse_streaming": "untested",
+      "tools_round_trip": "untested",
+      "reasoning": "untested",
+      "images": "capability-advertised (untested)",
+      "cancellation": "untested"
+    },
+    {
+      "id": "claude-opus-4-8",
+      "name": "Claude Opus 4.8",
+      "owned_by": "anthropic",
+      "aliases": ["claude-opus-4.8", "opus-4.8", "opus-4-8", "claude-4.8-opus"],
+      "context_window": 1000000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "claude-opus-4-7",
+      "name": "Claude Opus 4.7",
+      "owned_by": "anthropic",
+      "aliases": ["claude-opus-4.7", "opus-4.7", "opus-4-7", "claude-4.7-opus"],
+      "context_window": 1000000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "claude-opus-4-6",
+      "name": "Claude Opus 4.6",
+      "owned_by": "anthropic",
+      "aliases": ["claude-opus-4.6", "opus-4.6", "opus-4-6", "claude-4.6-opus"],
+      "context_window": 1000000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    },
+    {
+      "id": "claude-sonnet-4-6",
+      "name": "Claude Sonnet 4.6",
+      "owned_by": "anthropic",
+      "aliases": ["claude-sonnet-4.6", "sonnet-4.6", "sonnet-4-6", "claude-4.6-sonnet"],
+      "context_window": 1000000,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "observed_upstream_model": null,
+      "protocols": { "chat_completions": "untested", "responses": "untested", "messages": "untested" }
+    }
+  ]
+}
